@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block title %}Visualized!{% endblock %}
+
+<style>
+
+.chart rect {
+  fill: steelblue;
+}
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
+
+</style>
+
+
+{% block breadcrumb_nav %}Visualized!{% endblock %}
+
+
+<svg class="chart"></svg>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var path = "{{ data_file_name }}"
+var file_format = "{{file_format}}"
+
+
+
+
+var w = 600;
+var h = 600;
+var padding = 30;
+
+var xScale = d3.scale.linear()
+        .domain([0, d3.max(dataset, function(d){
+                                return d.values[0]; })])
+        .range([padding, w - (padding*2)]);
+
+        var yScale = d3.scale.ordinal()
+            .domain(d3.range(dataset.length))
+            .rangeRoundBands([padding, h- padding], 0.05);
+
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h)
+
+        svg.selectAll("rect")
+            .data(dataset)
+            .enter()
+            .append("rect")
+            .attr("x", 0 + padding)
+            .attr("y", function(d, i){
+            return yScale(i);
+            })
+            .attr("width", function(d) {
+                return xScale(d.values[0]);
+            })
+            .attr("height", yScale.rangeBand())
+
+</script>
+
+{% endblock %}
